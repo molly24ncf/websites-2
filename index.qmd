@@ -7,40 +7,9 @@ execute:
 ```{r}
 #| message: false
 library(tidyverse)
+library(knitr)
 ```
 
 ```{r}
-# Convert the wide billboard data into one row per week per song,
-# then plot selected songs' chart positions over time.
-billboard_long <- billboard |>
-  select(artist, track, date.entered, starts_with("wk")) |>
-  pivot_longer(
-    cols = starts_with("wk"),
-    names_to = "week",
-    values_to = "rank",
-    values_drop_na = TRUE
-  ) |>
-  mutate(
-    week = as.integer(str_remove(week, "wk")),
-    chart_date = date.entered + weeks(week - 1)
-  ) |>
-  filter(track %in% c("Loser", "Kryptonite", "Baby Don't Cry", "Wobble Wobble"))
-
-billboard_long |>
-  ggplot(aes(x = chart_date, y = rank, color = track, group = track)) +
-  geom_line(linewidth = 1.1) +
-  geom_point(size = 1.5) +
-  scale_y_reverse() +
-  labs(
-    title = "Billboard chart trajectories for selected songs",
-    subtitle = "Lower ranks indicate better chart performance.",
-    x = "Chart date",
-    y = "Billboard rank",
-    color = "Track"
-  ) +
-  theme_minimal(base_size = 12) +
-  theme(
-    plot.title = element_text(face = "bold"),
-    legend.position = "top"
-  )
+include_graphics("billboard.png")
 ```
